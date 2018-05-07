@@ -1,9 +1,5 @@
 use std::fmt::{Display, Formatter, Result};
 
-pub trait PostHistory {
-    fn history(&self) -> String;
-}
-
 pub struct Author {
     firstname: String,
     lastname: String,
@@ -85,6 +81,10 @@ impl<'a> Post<'a> {
     pub fn author(&self) -> String {
         format!("{}", &self.author)
     }
+
+    pub fn history(&self) -> String {
+        self.history.show()
+    }
 }
 
 impl<'a> PostDraft<'a> {
@@ -132,23 +132,5 @@ impl<'a> PostPendingReview<'a> {
             author: self.author,
             history: self.history.add(format!("Draft rejected with message: '{}'", message))
         }
-    }
-}
-
-impl<'a> PostHistory for Post<'a> {
-    fn history(&self) -> String {
-        self.history.show()
-    }
-}
-
-impl<'a> PostHistory for PostDraft<'a> {
-    fn history(&self) -> String {
-        self.history.show()
-    }
-}
-
-impl<'a> PostHistory for PostPendingReview<'a> {
-    fn history(&self) -> String {
-        self.history.show()
     }
 }

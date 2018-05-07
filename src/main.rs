@@ -1,6 +1,6 @@
 mod lib;
 
-use lib::{PostHistory, Post, Author};
+use lib::{Post, Author};
 
 fn main() {
     let mc = Author::new().add_firstname("Michael").add_lastname("Cane");
