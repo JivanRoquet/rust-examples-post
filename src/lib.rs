@@ -5,6 +5,26 @@ pub struct Author {
     lastname: String,
 }
 
+impl Display for Author {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "{} {}", self.firstname, self.lastname)
+    }
+}
+
+impl Author {
+    pub fn new() -> Author {
+        Author { firstname: String::new(), lastname: String::new() }
+    }
+
+    pub fn add_firstname(self, firstname: &str) -> Author {
+        Author { firstname: format!("{}", firstname), lastname: self.lastname }
+    }
+
+    pub fn add_lastname(self, lastname: &str) -> Author {
+        Author { firstname: self.firstname, lastname: format!("{}", lastname) }
+    }
+}
+
 pub struct History {
     history: Vec<String>,
 }
@@ -24,26 +44,6 @@ impl History {
     fn add(&self, new: String) -> History {
         let history = [&self.history[..], &vec![new]].concat();
         History { history: history }
-    }
-}
-
-impl Display for Author {
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(f, "{} {}", self.firstname, self.lastname)
-    }
-}
-
-impl Author {
-    pub fn new() -> Author {
-        Author { firstname: String::new(), lastname: String::new() }
-    }
-
-    pub fn add_firstname(self, firstname: &str) -> Author {
-        Author { firstname: format!("{}", firstname), lastname: self.lastname }
-    }
-
-    pub fn add_lastname(self, lastname: &str) -> Author {
-        Author { firstname: self.firstname, lastname: format!("{}", lastname) }
     }
 }
 
