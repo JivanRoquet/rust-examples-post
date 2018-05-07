@@ -9,6 +9,28 @@ pub struct Author {
     lastname: String,
 }
 
+pub struct History {
+    history: Vec<String>,
+}
+
+impl History {
+    fn new() -> History {
+        History { history: vec![] }
+    }
+
+    fn show(&self) -> String {
+        let vstr: Vec<String> = self.history.iter().enumerate().map(|(i, h)| {
+            format!("{} -> {}", i, h)
+        }).collect();
+        vstr.join("\n")
+    }
+
+    fn add(&self, new: String) -> History {
+        let history = [&self.history[..], &vec![new]].concat();
+        History { history: history }
+    }
+}
+
 impl Display for Author {
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "{} {}", self.firstname, self.lastname)
@@ -32,19 +54,19 @@ impl Author {
 pub struct Post<'a> {
     content: String,
     author: &'a Author,
-    history: Vec<String>,
+    history: History,
 }
 
 pub struct PostDraft<'a> {
     content: Option<String>,
     author: Option<&'a Author>,
-    history: Vec<String>,
+    history: History,
 }
 
 pub struct PostPendingReview<'a> {
     content: Option<String>,
     author: Option<&'a Author>,
-    history: Vec<String>,
+    history: History,
 }
 
 impl<'a> Post<'a> {
@@ -52,7 +74,7 @@ impl<'a> Post<'a> {
         PostDraft {
             content: None,
             author: None,
-            history: vec![String::from("Draft created")]
+            history: History::new().add(String::from("Draft created"))
         }
     }
 
@@ -71,7 +93,7 @@ impl<'a> PostDraft<'a> {
         PostDraft {
             content: self.content,
             author: Some(author),
-            history: [&self.history[..], &vec![new_history]].concat()
+            history: self.history.add(new_history)
         }
     }
 
@@ -84,7 +106,7 @@ impl<'a> PostDraft<'a> {
         PostDraft {
             content: Some(new_content),
             author: self.author,
-            history: [&self.history[..], &vec![new_history]].concat()
+            history: self.history.add(new_history)
         }
     }
 
@@ -93,7 +115,7 @@ impl<'a> PostDraft<'a> {
         PostPendingReview {
             content: self.content,
             author: self.author,
-            history: [&self.history[..], &vec![new_history]].concat()
+            history: self.history.add(new_history)
         }
     }
 }
@@ -104,7 +126,7 @@ impl<'a> PostPendingReview<'a> {
         Post {
             content: self.content.unwrap(),
             author: self.author.unwrap(),
-            history: [&self.history[..], &vec![new_history]].concat()
+            history: self.history.add(new_history)
         }
     }
 
@@ -113,34 +135,25 @@ impl<'a> PostPendingReview<'a> {
         PostDraft {
             content: self.content,
             author: self.author,
-            history: [&self.history[..], &vec![new_history]].concat()
+            history: self.history.add(new_history)
         }
     }
 }
 
 impl<'a> PostHistory for Post<'a> {
     fn history(&self) -> String {
-        let vstr: Vec<String> = self.history.iter().enumerate().map(|(i, h)| {
-            format!("{} -> {}", i, h)
-        }).collect();
-        vstr.join("\n")
+        self.history.show()
     }
 }
 
 impl<'a> PostHistory for PostDraft<'a> {
     fn history(&self) -> String {
-        let vstr: Vec<String> = self.history.iter().enumerate().map(|(i, h)| {
-            format!("{} -> {}", i, h)
-        }).collect();
-        vstr.join("\n")
+        self.history.show()
     }
 }
 
 impl<'a> PostHistory for PostPendingReview<'a> {
     fn history(&self) -> String {
-        let vstr: Vec<String> = self.history.iter().enumerate().map(|(i, h)| {
-            format!("{} -> {}", i, h)
-        }).collect();
-        vstr.join("\n")
+        self.history.show()
     }
 }
