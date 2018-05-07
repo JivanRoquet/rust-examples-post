@@ -80,7 +80,7 @@ impl<'a> PostDraft<'a> {
             Some(old) => format!("{}\n{}", old, new),
             None      => format!("{}", new),
         };
-        let new_history = String::from("Text added");
+        let new_history = format!("{} characters of text added", new.len());
         PostDraft {
             content: Some(new_content),
             author: self.author,
