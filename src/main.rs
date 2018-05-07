@@ -25,7 +25,16 @@ fn main() {
     let pjj = pjj.request_review();
     let pjj = pjj.approve();
 
-    let posts = vec![pmc, pjj];
+    let mj  = Author::new().add_firstname("Michael").add_lastname("Jackson");
+    let pmj = Post::new();
+    let pmj = pmj.add_author(&mj);
+    let pmj = pmj.add_text("Hey there it's Michael Jackson.");
+    let pmj = pmj.add_text("Hey pretty baby with the high heels on");
+    let pmj = pmj.add_text("You give me fever like I've never, ever known");
+    let pmj = pmj.request_review();
+    let pmj = pmj.approve();
+
+    let posts = vec![pmc, pjj, pmj];
     for post in posts {
         println!("{}", post.history());
         println!("{}", post.content());
