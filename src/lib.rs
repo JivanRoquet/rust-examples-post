@@ -89,11 +89,10 @@ impl<'a> Post<'a> {
 
 impl<'a> PostDraft<'a> {
     pub fn add_author(self, author: &'a Author) -> PostDraft<'a> {
-        let new_history = format!("Author added: {}", author);
         PostDraft {
             content: self.content,
             author: Some(author),
-            history: self.history.add(new_history)
+            history: self.history.add(format!("Author added: {}", author))
         }
     }
 
@@ -102,40 +101,36 @@ impl<'a> PostDraft<'a> {
             Some(old) => format!("{}\n{}", old, new),
             None      => format!("{}", new),
         };
-        let new_history = format!("{} characters of text added", new.len());
         PostDraft {
             content: Some(new_content),
             author: self.author,
-            history: self.history.add(new_history)
+            history: self.history.add(format!("{} characters of text added", new.len()))
         }
     }
 
     pub fn request_review(self) -> PostPendingReview<'a> {
-        let new_history = String::from("Review requested");
         PostPendingReview {
             content: self.content,
             author: self.author,
-            history: self.history.add(new_history)
+            history: self.history.add(String::from("Review requested"))
         }
     }
 }
 
 impl<'a> PostPendingReview<'a> {
     pub fn approve(self) -> Post<'a> {
-        let new_history = String::from("Draft approved");
         Post {
             content: self.content.unwrap(),
             author: self.author.unwrap(),
-            history: self.history.add(new_history)
+            history: self.history.add(String::from("Draft approved"))
         }
     }
 
     pub fn reject(self, message: &str) -> PostDraft<'a> {
-        let new_history = format!("Draft rejected with message: '{}'", message);
         PostDraft {
             content: self.content,
             author: self.author,
-            history: self.history.add(new_history)
+            history: self.history.add(format!("Draft rejected with message: '{}'", message))
         }
     }
 }
